@@ -5,6 +5,8 @@ import com.example.myapp.thrift.FooService;
 import com.twitter.finagle.builder.Server;
 import com.twitter.finagle.builder.ServerBuilder;
 import com.twitter.finagle.thrift.ThriftServerFramedCodec;
+import com.twitter.ostrich.admin.AdminHttpService;
+import com.twitter.ostrich.admin.RuntimeEnvironment;
 import org.apache.thrift.protocol.TBinaryProtocol;
 
 import java.net.InetSocketAddress;
@@ -33,5 +35,11 @@ public class MyAppThriftServer {
         ClusterFactory.reportServerUpAndRunning(server, "FooService");
 
         System.out.println("The server, running from port "+port+" joined the FooService cluster.");
+
+        int ostrichPort = port + 1;
+        RuntimeEnvironment runtime = new RuntimeEnvironment("");
+        AdminHttpService admin = new AdminHttpService(ostrichPort, 0, runtime);
+        admin.start();
+        System.out.println("Ostrich reporting started on port "+ostrichPort);
     }
 }

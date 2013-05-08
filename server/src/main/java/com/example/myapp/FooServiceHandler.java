@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import com.example.myapp.thrift.Foo;
 import com.example.myapp.thrift.FooService;
+import com.twitter.ostrich.stats.Stats;
 import com.twitter.util.Future;
 
 public class FooServiceHandler implements FooService.FutureIface {
@@ -11,6 +12,8 @@ public class FooServiceHandler implements FooService.FutureIface {
     }
 
     public Future<Foo> giveMeSomeFoo(int id) {
+        Stats.incr("number_of_foo_calls"); // Report stats to Ostrich
+
         // Domain objects are immutable. They come with constructors and builders.
         Foo foo = new Foo.Builder()
                 .bar("test")

@@ -21,6 +21,9 @@ Got hey, this is a response from port=2381
 Got hey, this is a response from port=3705
 ...
 
+Monitoring
+- Start a server instance
+- Check out http://localhost:XXXX/stats.txt (XXXX is the port number for Ostrich admin)
 
 What are the good parts?
 - Service discovery

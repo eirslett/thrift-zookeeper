@@ -28,7 +28,7 @@ public class MyAppThriftServer {
                 .name("FooService")
                 .codec(ThriftServerFramedCodec.get())
                 .maxConcurrentRequests(50)
-                .logger(Logger.getLogger("ROOT"))
+                // .logger(Logger.getLogger("ROOT"))
                 .bindTo(new InetSocketAddress(port))
         );
 

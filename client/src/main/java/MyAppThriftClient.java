@@ -24,7 +24,7 @@ public class MyAppThriftClient {
                         .timeout(Duration.apply(2, TimeUnit.SECONDS))
                         .retries(4)
                         .hostConnectionLimit(1)
-                        .logger(Logger.getLogger("ROOT"))
+                        // .logger(Logger.getLogger("ROOT"))
                 );
 
         FooService.FutureIface client = new FooService.FinagledClient(

@@ -10,12 +10,21 @@ import com.twitter.finagle.thrift.ThriftClientRequest;
 import com.twitter.util.Duration;
 import org.apache.thrift.protocol.TBinaryProtocol;
 
+import java.net.SocketAddress;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class MyAppThriftClient {
     public static void main(String[] args) {
         Cluster cluster = ClusterFactory.getForService("FooService");
+
+        // Querying for a list of online servers is not necessary for Finagle,
+        // but can be used for vanilla thrift servers.
+        List<SocketAddress> onlineServers = ClusterFactory.getOnlineServers("FooService");
+        System.out.println("Online servers: "+onlineServers.toString());
+
         Service<ThriftClientRequest, byte[]> service =
                 ClientBuilder.safeBuild(ClientBuilder.get()
                         .cluster(cluster) // this is where service discovery happens

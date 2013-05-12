@@ -13,6 +13,8 @@ To run:
 - Run the client (MyAppThriftClient)
 
 Example output:
+Online servers: [/0:0:0:0:0:0:0:0:3705, /0:0:0:0:0:0:0:0:5071, /0:0:0:0:0:0:0:0:2381]
+
 Got hey, this is a response from port=3705
 Got hey, this is a response from port=3705
 Got hey, this is a response from port=5071

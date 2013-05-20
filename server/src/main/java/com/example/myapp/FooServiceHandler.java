@@ -1,9 +1,11 @@
 package com.example.myapp;
 
-import com.example.myapp.thrift.Foo;
-import com.example.myapp.thrift.FooService;
+import com.example.myapp.thrift.*;
 import com.twitter.ostrich.stats.Stats;
+import com.twitter.scrooge.Option;
 import com.twitter.util.Future;
+import com.twitter.util.Throw;
+import scala.Option$;
 
 public class FooServiceHandler implements FooService.FutureIface {
     private String bazz;
@@ -24,5 +26,10 @@ public class FooServiceHandler implements FooService.FutureIface {
         // Finagle is async, so wrap the return value in a Future
         // if the implementation is synchronous
         return Future.value(foo);
+    }
+
+    @Override
+    public Future<Foo> pleaseMore(String pass) {
+        return Future.exception(new RuntimeException("fuckit, you got enough"));
     }
 }

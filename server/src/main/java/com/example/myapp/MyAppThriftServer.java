@@ -6,7 +6,9 @@ import com.twitter.finagle.builder.Server;
 import com.twitter.finagle.builder.ServerBuilder;
 import com.twitter.finagle.thrift.ThriftServerFramedCodec;
 import com.twitter.ostrich.admin.AdminHttpService;
+import com.twitter.ostrich.admin.FolderResourceHandler;
 import com.twitter.ostrich.admin.RuntimeEnvironment;
+import com.twitter.ostrich.admin.ServiceTracker;
 import org.apache.thrift.protocol.TBinaryProtocol;
 
 import java.net.InetSocketAddress;
@@ -22,8 +24,10 @@ public class MyAppThriftServer {
         // Pass port number into our handler for this example (for debugging)
         FooServiceHandler handler = new FooServiceHandler("port="+port);
 
+        FooService.FinagledService service = new FooService.FinagledService(handler, new TBinaryProtocol.Factory());
+
         Server server = ServerBuilder.safeBuild(
-                new FooService.FinagledService(handler, new TBinaryProtocol.Factory()),
+                service,
                 ServerBuilder.get()
                 .name("FooService")
                 .codec(ThriftServerFramedCodec.get())
@@ -39,6 +43,7 @@ public class MyAppThriftServer {
         int ostrichPort = port + 1;
         RuntimeEnvironment runtime = new RuntimeEnvironment("");
         AdminHttpService admin = new AdminHttpService(ostrichPort, 0, runtime);
+        admin.addContext("/ostrich-admin", new FolderResourceHandler("/ostrich-admin"));
         admin.start();
         System.out.println("Ostrich reporting started on port "+ostrichPort);
     }

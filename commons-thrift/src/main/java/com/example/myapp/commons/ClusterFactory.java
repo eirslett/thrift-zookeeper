@@ -1,18 +1,16 @@
 package com.example.myapp.commons;
 
-import com.google.common.collect.ImmutableSet;
-import com.twitter.common.net.pool.DynamicHostSet;
 import com.twitter.common.quantity.Amount;
 import com.twitter.common.quantity.Time;
 import com.twitter.common.zookeeper.ServerSet;
 import com.twitter.common.zookeeper.ServerSetImpl;
 import com.twitter.common.zookeeper.ZooKeeperClient;
-import com.twitter.finagle.builder.Cluster;
+import com.twitter.finagle.Client;
+import com.twitter.finagle.Group;
 import com.twitter.finagle.builder.Server;
+import com.twitter.finagle.zookeeper.ZkResolver;
 import com.twitter.finagle.zookeeper.ZookeeperServerSetCluster;
-import com.twitter.thrift.ServiceInstance;
 import scala.collection.JavaConversions;
-import scala.collection.Seq;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -32,28 +30,26 @@ public class ClusterFactory {
             new InetSocketAddress("localhost", 2181)
     );
 
-    public static ZookeeperServerSetCluster getForService(String clusterName) {
+    public static ZookeeperServerSetCluster getCluster(String clusterName) {
+
         ServerSet serverSet = new ServerSetImpl(getZooKeeperClient(), getPath(clusterName));
         return new ZookeeperServerSetCluster(serverSet);
     }
 
-    public static void reportServerUpAndRunning(Server server, String clusterName) {
-        getForService(clusterName).join(server.localAddress(), new scala.collection.immutable.HashMap());
+    public static ServerSet getServerSet(String groupName) {
+        return new ServerSetImpl(getZooKeeperClient(), getPath(groupName));
     }
 
-    public static List<SocketAddress> getOnlineServers(String clusterName) {
-        try {
-            ZookeeperServerSetCluster cluster = getForService(clusterName);
-            // Run the monitor() method, which will block the thread until the initial list of servers arrives.
-            new ServerSetImpl(zooKeeperClient, getPath(clusterName)).monitor(new DynamicHostSet.HostChangeMonitor<ServiceInstance>(){
-                public void onChange(ImmutableSet<ServiceInstance> serviceInstances) {
-                    // do nothing
-                }
-            });
-            return JavaConversions.asJavaList(cluster.snap()._1());
-        } catch (DynamicHostSet.MonitorException e) {
-            throw new RuntimeException("Couldn't get list of online servers", e);
-        }
+    public static Group<SocketAddress> getGroup(String groupName) {
+        return new ZkResolver().resolve("127.0.0.1:2181!"+getPath(groupName)).get();
+    }
+
+    public static void reportServerUpAndRunning(Server server, String clusterName) {
+        getCluster(clusterName).join(server.localAddress(), new scala.collection.immutable.HashMap());
+    }
+
+    public static Set<SocketAddress> getOnlineServers(String clusterName) {
+        return JavaConversions.asJavaSet(getGroup(clusterName).members());
     }
 
     private static String getPath(String clusterName) {

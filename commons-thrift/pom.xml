@@ -13,8 +13,14 @@
   <dependencies>
     <dependency>
       <groupId>com.twitter</groupId>
+      <artifactId>finagle-thrift_2.10</artifactId>
+      <version>6.4.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
       <artifactId>finagle-serversets_2.10</artifactId>
-      <version>6.3.0</version>
+      <version>6.4.0</version>
     </dependency>
   </dependencies>
 </project>

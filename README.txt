@@ -1,3 +1,7 @@
+# Not maintained
+
+This project is a couple of years old now. Finagle has changed its public API, so the code posted here probably doesn't work. It's kept around for historic reasons.
+
 === Thrift-Zookeeper example ===
 This example used Finagle, a library developed at Twitter.
 It contains:
